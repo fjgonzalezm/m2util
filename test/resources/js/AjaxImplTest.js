@@ -1,101 +1,8 @@
 /**
  * @author fjgm
  */
-//var testJsonFeed = "http://localhost/emptyjson.php?callback=?";
-
-//getHtmlElem TestCases
 
 (function(){
-test('testJsonUtil.getHtmlElem() Test Cases', function() {
-	equals("<div />",JsonUtil.getHtmlElem(),'Called without arguments');
-
-	equals("<p id='testId'>Test Content</p>",JsonUtil.getHtmlElem({
-		elemName: "p",
-		elemContent: "Test Content",
-		attrName: "id",
-		attrValue: "testId"
-	}),'Call with all parameters especified');
-
-	equals("<p >Test Content</p>",JsonUtil.getHtmlElem({
-		elemName: "p",
-		elemContent: "Test Content"
-	}),'Call with Attribute both parameters missing');
-
-	equals("<p >Test Content</p>",JsonUtil.getHtmlElem({
-		elemName: "p",
-		elemContent: "Test Content"
-	}),'Call with Attribute Value parameter missing');
- });
- 
-// test('testJsonUtil.getHtmlElem(): AllProvided', function() {
-//	equals("<p id='testId'>Test Content</p>",JsonUtil.getHtmlElem({
-//		elemName: "p",
-//		elemContent: "Test Content",
-//		attrName: "id",
-//		attrValue: "testId"
-//	}),'Call with all parameters especified');
-// });
-// 
-// test('testJsonUtil.getHtmlElem():AttributeMissing', function() {
-//	equals("<p >Test Content</p>",JsonUtil.getHtmlElem({
-//		elemName: "p",
-//		elemContent: "Test Content"
-//	}),'Call with Attribute both parameters missing');
-// });
-// 
-// test('testJsonUtil.getHtmlElem():AttributeValueMissing', function() {
-//	equals("<p >Test Content</p>",JsonUtil.getHtmlElem({
-//		elemName: "p",
-//		elemContent: "Test Content"
-//	}),'Call with Attribute Value parameter missing');
-// });
-	
-})();
- 
- 
-(function(){
-	// getAttr TestCases
-test('testJsonUtil.getAttr() Test Cases', function() {
-	equals(JsonUtil.getAttr(),"",'Call with no parameter');
-
-	equals(JsonUtil.getAttr({
-		attrValue: "testId"
-	}),"",'Call with Attribute Name parameter missing');
-
-	equals(JsonUtil.getAttr({
-		attrName: "class"
-	}),"",'Call with Attribute Value parameter missing');
-	
-	equals(JsonUtil.getAttr({
-		attrName: "class",
-		attrValue: "active"
-	}),"class='active'",'Call with all Attribute Values provided');
- });
-
-//test('testJsonUtil.getAttr():AttributeNameMissing', function() {
-//	equals(JsonUtil.getAttr({
-//		attrValue: "testId"
-//	}),"",'Call with Attribute Name parameter missing');
-// });
-//
-//test('testJsonUtil.getAttr():AttributeValueMissing', function() {
-//	equals(JsonUtil.getAttr({
-//		attrName: "class"
-//	}),"",'Call with Attribute Value parameter missing');
-// });
-// 
-//test('testJsonUtil.getAttr():AllAttributeValueProvided', function() {
-//	equals(JsonUtil.getAttr({
-//		attrName: "class",
-//		attrValue: "active"
-//	}),"class='active'",'Call with all Attribute Values provided');
-// });
-
-})(); 
- 
- // ajaxQueue TestCases
- 
- (function(){
  	var obj = {
 		url: "/contacts.json",
 		success: function(ajaxWrapper) {
@@ -112,22 +19,95 @@ test('testJsonUtil.getAttr() Test Cases', function() {
 				attrValue: "testDiv"
 			})).find("#testDiv").append(ajaxWrapper.data);
 		},
-		isRetry: false
-	}
+		doRetry: false
+	};
 	
+
+	module('AjaxUtil.getHtmlElem() Test Module');
+	
+	test('Use Case: Called without arguments', function() {
+		equals("<div />",JsonUtil.getHtmlElem(),'Passed');
+	 });
+
+	test('Use Case: Call with all parameters especified', function() {
+		equals("<p id='testId'>Test Content</p>",JsonUtil.getHtmlElem({
+			elemName: "p",
+			elemContent: "Test Content",
+			attrName: "id",
+			attrValue: "testId"
+		}),'Use Case: Call with all parameters especified');
+	 });
+
+	test('Use Case: Call with Attribute both parameters missing', function() {
+		equals("<p >Test Content</p>",JsonUtil.getHtmlElem({
+			elemName: "p",
+			elemContent: "Test Content"
+		}),'Use Case: Call with Attribute both parameters missing');
+	 });
+
+	test('Use Case: Call with Attribute Value parameter missing', function() {
+		equals("<p >Test Content</p>",JsonUtil.getHtmlElem({
+			elemName: "p",
+			elemContent: "Test Content"
+		}),'Use Case: Call with Attribute Value parameter missing');
+	 });
+
+
+	module('AjaxUtil.getAttr() Module');
+	test('Use Case: Call with no parameter', function() {
+		equals(JsonUtil.getAttr(),"",'Use Case: Call with no parameter');
+	 });
+
+	test('Use Case: Call with Attribute Name parameter missing', function() {
+		equals(JsonUtil.getAttr({
+			attrValue: "testId"
+		}),"",'Use Case: Call with Attribute Name parameter missing');
+	 });
+
+	test('Use Case: Call with Attribute Value parameter missing', function() {
+		equals(JsonUtil.getAttr({
+			attrName: "class"
+		}),"",'Use Case: Call with Attribute Value parameter missing');
+	 });
+
+	test('Use Case: Call with all Attribute Values provided', function() {
+		equals(JsonUtil.getAttr({
+			attrName: "class",
+			attrValue: "active"
+		}),"class='active'",'Use Case: Call with all Attribute Values provided');
+	 });
+
+
+	module('AjaxUtil.addAjaxQueue() Module');
+
 	JsonUtil.addAjaxQueue(obj);
-	
-	test('JsonUtil.addAjaxQueue() Test Cases',function() {
+
+	test('Use Case: Validates the object added is the object returned',function() {
 		equals(
 			JsonUtil.getAjaxQueue()[0],
 			obj,
-			'Validates the object added is the object returned'
+			'Use Case: Validates the object added is the object returned'
 		);
+	});
+
+	test('Use Case: Validate length is correct',function() {
 		equals(
 			JsonUtil.getAjaxQueue().length,
 			1,
-			'Validate length is correct'
+			'Use Case: Validate length is correct'
 		);
-		
 	});
- })();
+
+	
+	//module('AjaxUtil.runNow() Module');
+	//JsonUtil.getAjaxQueue().pop();
+	//	test('JsonUtil.runNow() Test Cases',function() {
+	//		stop(3000);
+	//		
+	//		equals(
+	//			JsonUtil.runNow(),'','Use Case: Success Ajax call'
+	//		);
+	//	});
+	
+})();
+ 

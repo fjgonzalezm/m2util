@@ -2,33 +2,37 @@
  * @author fjgm
  */
 
-var JsonUtil = (function($,undefined){
+var AjaxUtil = JsonUtil = (function($,wnd,undefined){
 	var settings = {},
 		ajaxQueue = [],
 		retryQueue = [],
 		inProgressXhr = [],
-		_addAjaxQueue = function(settings) {
-			if (settings===undefined || settings.length)
+		_addAjaxQueue = function(options) {
+			if (options===undefined)
 				return;
-
-			ajaxQueue.push(settings);
+			
+			ajaxQueue.push(options);
 		}, // End addAjaxQueue
 		//
 		// When called, it will fireup a ajax call for each elem in ajaxQueue
 		//
 		_runAjax = function() {
-			if (ajaxQueue===undefined || ajaxQueue.length)
+			if (ajaxQueue===undefined || !ajaxQueue.length || ajaxQueue.length<1)
 				return;
 			
 			
 		}, // End runAjax
+		
+		
 		//
 		// Execute a ajax call immediately based on settings provided.
 		// Settings it's a jQuery's Ajax object
 		//
 		_runNow = function(settings) {
-			if (settings===undefined || settings.length)
+			if (settings===undefined)
 				return;
+			
+			
 			
 		}, // End runNow
 		//
@@ -41,6 +45,7 @@ var JsonUtil = (function($,undefined){
 					? ""
 					: options.attrName + "='" + options.attrValue + "'"; 
 		}, //End toAttr
+		
 		_getHtmlElem = function(options){
 			var def = {
 				elemName: "div"
@@ -51,9 +56,11 @@ var JsonUtil = (function($,undefined){
 					: "\<" + def.elemName + " " + _getAttr(def) +"\>"
 						+ def.elemContent + "\<\/" + def.elemName + "\>";
 		}, // End toHtmlElem
+		
 		_getAjaxQueue = function() {
 			return ajaxQueue;
-		},
+		}, // End _getAjaxQueue
+		
 		_getFacets = function(resume, ajaxWrapper){
 			if (!resume) {
 				// Fire up Ajax call
@@ -70,7 +77,7 @@ var JsonUtil = (function($,undefined){
 				}
 			}
 		}
-		
+				
 		return {
 			getAttr: _getAttr,
 			getHtmlElem: _getHtmlElem,
@@ -79,5 +86,5 @@ var JsonUtil = (function($,undefined){
 			runAjax: _runAjax,
 			runNow: _runNow
 		}; 	
-})(jQuery);
+})(jQuery,this);
 

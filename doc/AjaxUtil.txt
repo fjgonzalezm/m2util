@@ -1,0 +1,18 @@
+The following documents several design desition about the AjaxUtil/JsonUtil Object.
+
+ajaxWrapper: The ajaxWrapper Object is an enhanced version of the object used by jQuery.ajax.
+its purpose is to add functionality for the AjaxUtil object be able to function. The baseline is that the 
+ajaxWrapper must have at least the same properties expected by jQuery.ajax. That includes:
+	- url: for more info see jQuery doc
+	- success: for more info see jQuery doc
+	- error: for more info see jQuery doc
+	- complete: for more info see jQuery doc
+	- beforeSend: for more info see jQuery doc
+	
+
+The ajaxWrapper adds support for the following properties:
+
+	- doRetry: specifies if the request should be queue (true) for retry upon failure or not
+	- retry: counter with a count of how many times the request has been retried. Only used if doRetry=true
+	- item: 
+	- 

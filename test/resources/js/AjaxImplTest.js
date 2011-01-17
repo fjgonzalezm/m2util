@@ -10,7 +10,7 @@
 		},
 		error: function(ajaxWrapper) {
 			alert(ajaxWrapper.status);
-			ok(false,'Ajax call failed');
+			ok(ajaxWrapper.status!=200,'Ajax call failed');
 		},
 		dataType: 'json',
 		async: true,

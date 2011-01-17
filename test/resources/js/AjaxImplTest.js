@@ -6,7 +6,7 @@
  	var obj = {
 		url: "/qunit/test/resources/json/contacts.json",
 		success: function(ajaxWrapper) {
-			ok(true, 'Ajax call successful');
+			ok(ajaxWrapper.status==200, 'Ajax call successful');
 		},
 		error: function(ajaxWrapper) {
 			alert(ajaxWrapper.status);

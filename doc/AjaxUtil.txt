@@ -14,5 +14,6 @@ The ajaxWrapper adds support for the following properties:
 
 	- doRetry: specifies if the request should be queue (true) for retry upon failure or not
 	- retry: counter with a count of how many times the request has been retried. Only used if doRetry=true
-	- item: 
-	- 
+	- data: Contains the JSON Object return in the XHR response (xhr.responseText)
+	- status: The HTTP code in the response (200/Success)
+	

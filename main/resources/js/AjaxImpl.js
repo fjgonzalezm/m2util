@@ -35,7 +35,7 @@ var JsonUtil = (function($,undefined){
 		// Returns a HTML attribute formatted as: attrName = 'attrValue'
 		// 
 		_getAttr = function(options){
-			return options===undefined
+			return (options===undefined || options.attrName===undefined || options.attrValue===undefined) 
 					? ""
 					: options.attrName===undefined
 					? ""

@@ -1,31 +1,12 @@
 /**
  * @author fjgm
  */
-//var Facets = (function($, undefined){
-//
-//    var Facets = function(location){
-//        return new Facets.fn.init(location);
-//    };
-//    
-//    Facets.fn = Facets.prototype : {
-//        init: function(location){
-//            this.location = location;
-//			return this;
-//        },
-//        
-//        getAsyncFacets: function(fnCallback){
-//            $.ajax({
-//                url: this.location,
-//                success: fnCallback
-//            });
-//        }
-//    }
-//})(jQuery);
 
 var JsonUtil = (function($,undefined){
 	var settings = {},
 		ajaxQueue = [],
 		retryQueue = [],
+		inProgressXhr = [],
 		_addAjaxQueue = function(settings) {
 			if (settings===undefined || settings.length)
 				return;
@@ -70,6 +51,9 @@ var JsonUtil = (function($,undefined){
 					: "\<" + def.elemName + " " + _getAttr(def) +"\>"
 						+ def.elemContent + "\<\/" + def.elemName + "\>";
 		}, // End toHtmlElem
+		_getAjaxQueue = function() {
+			return ajaxQueue;
+		},
 		_getFacets = function(resume, ajaxWrapper){
 			if (!resume) {
 				// Fire up Ajax call
@@ -91,27 +75,9 @@ var JsonUtil = (function($,undefined){
 			getAttr: _getAttr,
 			getHtmlElem: _getHtmlElem,
 			addAjaxQueue: _addAjaxQueue,
+			getAjaxQueue: _getAjaxQueue,
 			runAjax: _runAjax,
 			runNow: _runNow
 		}; 	
 })(jQuery);
 
-
-
-//(function(window,$,undefined) {
-//	
-//	document = window.document;
-//	
-//
-//	var Json2Html = function() {
-//		return this;
-//	};
-	
-//	Json2Html.toElem =  function(elem, text, id, class) {
-//			window.alert("Hello");
-//			return "Hello";
-//	};
-//	
-//	
-
-// })(window, jQuery, undefined);

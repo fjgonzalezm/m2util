@@ -9,7 +9,6 @@
 			ok(ajaxWrapper.status==200, 'Ajax call successful');
 		},
 		error: function(ajaxWrapper) {
-			alert(ajaxWrapper.status);
 			ok(ajaxWrapper.status!=200,'Ajax call failed');
 		},
 		dataType: 'json',
@@ -100,6 +99,24 @@
 	test('Retrieve a json resources Async',function() {
 		stop();
 		
+		expect(1);
+		AjaxUtil.runNow(obj);
+		
+		setTimeout(function(){start()},300);
+	});
+
+	test('Retrieve an unexisting json resources Async',function() {
+		stop();
+		
+		expect(1);
+		obj['url']='/qunit/test/resources/json/doesexists.json';
+		obj['success'] = function() {
+			ok(false,'Test an unsuccessful Ajax call');
+		};
+		obj['error'] = function(ajaxWrapper) {
+			ok(ajaxWrapper.status!=200,'Test a unsuccessful Ajax call');	
+		};
+						
 		AjaxUtil.runNow(obj);
 		
 		setTimeout(function(){start()},300);

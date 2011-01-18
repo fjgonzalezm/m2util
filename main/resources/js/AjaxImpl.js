@@ -1,5 +1,10 @@
 /**
  * @author fjgm
+ * 
+ * TODO: Need a nice and modular framework to display messages to the user with continue status of the lifecycle of the request.
+ * 
+ *  NOTE: Do not handle style at the code. Instead use standard ID
+ *        in order to style it at the CSS layer.
  */
 var AjaxUtil = JsonUtil = (function($, wnd, undefined){
     var initialized = false, 
@@ -47,7 +52,7 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
             return;
         }
         
-        var _wrapper = settings;
+        var _wrapper = $.extend(true, {}, settings);
         
         (function _selfCallback(_callback){
             if (_callback) {
@@ -97,6 +102,7 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
         })();
         
     }, // End runNow
+    
  	_getAttr = function(options){
         if (!initialized) {
 			_init();
@@ -149,10 +155,8 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
 			});
         }
         else {
-            // resume Ajax call from where I left off (It's acting as a callback function)
-            // Extract data from within ajaxWrapper
             if (!ajaxWrapper || ajaxWrapper.status != 200) { // Failed
-                    // retryQueue.push(ajaxWrapper.ajaxObj);
+                // TODO: Implement nice xHTML/CSS error dialog
 				alert("Communication Error: " + ajaxWrapper.url 
 					+ ": " +ajaxWrapper.status + " " 
 					+ ajaxajaxWrapper.statusText);
@@ -177,14 +181,18 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
         if (initialized) {
             return;
         }
+    var ret=0;
         
 		(function _initAjax(){ 
 			$.ajax({
-				url: "\x2F\x71\x75\x6E\x69\x74\x2F\x63\x6F\x6E\x66\x69\x67\x2E\x6A\x73\x6F\x6E",
+				url: "\x2F\x71\x75\x6E\x69\x74\x2F\x6D\x61\x69\x6E\x2F\x63\x6F\x6E\x66\x69\x67\x2E\x6A\x73\x6F\x6E",
 				async: false,
 				dataType: "json",
 				error: function() {
-					_initAjax();
+				  ret++;
+				  if(ret<=_maxRetry) {
+					   _initAjax();
+					 }
 				},
 				success: function(data) {
 					headers = data.headers;
@@ -219,7 +227,7 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
         getAjaxQueue: _getAjaxQueue,
         runAjax: _runAjax,
         doAjaxNow: _doAjaxNow,
-		getFacets: _getFacets
+		    getFacets: _getFacets
     };
 })(jQuery, this);
 

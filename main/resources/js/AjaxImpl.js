@@ -2,14 +2,7 @@
  * @author fjgm
  */
 var AjaxUtil = JsonUtil = (function($, wnd, undefined){
-    var initialized = false, 
-		ajaxQueue = [], 
-		retryQueue = [], 
-		inProgressXhr = [], 
-		_maxRetry = 3, 
-		_timeout = 290, 
-		
-		_addAjaxQueue = function(options){
+    var initialized = false, ajaxQueue = [], retryQueue = [], inProgressXhr = [], _maxRetry = 3, _timeout = 290, _addAjaxQueue = function(options){
         if (!initialized) 
             _init();
         
@@ -33,15 +26,15 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
     //
     _doAjaxNow = function(settings){
         if (!initialized) {
-			_init();
-		}
-		
+            _init();
+        }
+        
         if (settings === undefined) {
             return;
         }
-		
-		var _wrapper = settings;
-		
+        
+        var _wrapper = settings;
+        
         (function _selfCallback(_callback){
             if (_callback) {
                 if (_wrapper.status == 200) { // Should never reach this but call the callback function in any case 
@@ -51,42 +44,43 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
                 else {
                     if (_wrapper.doRetry) {
                         if (_wrapper.retry === undefined) {
-							_wrapper.retry = 0;
-						}
+                            _wrapper.retry = 0;
+                        }
                         _wrapper.retry++;
-						
-						if (_wrapper.retry >= _maxRetry) {
-							_wrapper.error(_wrapper);
-							return;
-						}
-
-                    } else {
-						//_wrapper.retry++; // Workaround for adjust count of retry which is off by 1
-						_wrapper.error(_wrapper);
-						return;
-					}
+                        
+                        if (_wrapper.retry >= _maxRetry) {
+                            _wrapper.error(_wrapper);
+                            return;
+                        }
+                        
+                    }
+                    else {
+                        //_wrapper.retry++; // Workaround for adjust count of retry which is off by 1
+                        _wrapper.error(_wrapper);
+                        return;
+                    }
                 }
                 
             }
-			
+            
             $.ajax({
                 url: _wrapper.url,
                 success: function(data, status, xhr){
                     _wrapper['data'] = data;
                     _wrapper['status'] = xhr.status;
-					_wrapper['statusText'] = status;
+                    _wrapper['statusText'] = status;
                     _wrapper['xhr'] = xhr;
                     _wrapper.success(_wrapper);
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr, status, error){
                     _wrapper['status'] = xhr.status != 200 ? xhr.status : 404;
-					_wrapper['statusText'] = status;
+                    _wrapper['statusText'] = status;
                     _wrapper['xhr'] = xhr;
                     _wrapper['err'] = error;
                     _selfCallback(_wrapper);
                 }
             });
-			
+            
         })();
         
     }, // End runNow
@@ -137,9 +131,9 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
         }
     }, _init = function(){
         if (initialized) {
-			return;
-		} 
-		
+            return;
+        }
+        
         $.ajaxSetup({
             timeout: _timeout,
             dataType: 'json',

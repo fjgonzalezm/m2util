@@ -146,5 +146,20 @@
             start()
         }, 300);
     });
+	
+	
+    module('AjaxUtil.getFacets() Module');
+
+    test('Retrieve an unexisting json resources Async and _retry_ enabled', function(){
+        stop();
+        
+        expect(1);
+        
+        AjaxUtil.getFacets();
+        
+        setTimeout(function(){
+            start()
+        }, 300);
+    });
     
 })();

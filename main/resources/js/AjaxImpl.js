@@ -2,7 +2,21 @@
  * @author fjgm
  */
 var AjaxUtil = JsonUtil = (function($, wnd, undefined){
-    var initialized = false, ajaxQueue = [], retryQueue = [], inProgressXhr = [], _maxRetry = 3, _timeout = 290, _addAjaxQueue = function(options){
+    var initialized = false, 
+		ajaxQueue = [], 
+		retryQueue = [], 
+		inProgressXhr = [], 
+		_maxRetry = 3, 
+		_timeout = 290,
+		headers = [{
+			name: "Accept-Language",
+			value: "en, en-US, es, es-VE",
+			context: "*"
+		}],
+		restful = [],
+		server = "http://localhost",
+		 
+		_addAjaxQueue = function(options){
         if (!initialized) 
             _init();
         
@@ -55,7 +69,6 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
                         
                     }
                     else {
-                        //_wrapper.retry++; // Workaround for adjust count of retry which is off by 1
                         _wrapper.error(_wrapper);
                         return;
                     }
@@ -84,15 +97,18 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
         })();
         
     }, // End runNow
- _getAttr = function(options){
-        if (!initialized) 
-            _init();
+ 	_getAttr = function(options){
+        if (!initialized) {
+			_init();
+		}
         
         return (options === undefined || options.attrName === undefined || options.attrValue === undefined) ? "" : options.attrName === undefined ? "" : options.attrName + "='" + options.attrValue + "'";
     }, //End toAttr
- _getHtmlElem = function(options){
-        if (!initialized) 
-            _init();
+ 	
+	_getHtmlElem = function(options){
+        if (!initialized) {
+			_init();
+		}
         
         var def = {
             elemName: "div"
@@ -104,46 +120,94 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
         def.elemName +
         "\>";
     }, // End toHtmlElem
- _getAjaxQueue = function(){
+ 	
+	_getAjaxQueue = function(){
         if (!initialized) 
             _init();
         
         return ajaxQueue;
     }, // End _getAjaxQueue
- _getFacets = function(resume, ajaxWrapper){
-        if (!initialized) 
-            _init();
+ 
+ 	_getFacets = function(resume, ajaxWrapper){
+    	if (!initialized) {
+			_init();
+		}
         
         if (!resume) {
             // Fire up Ajax call
-        
+        	_doAjaxNow({
+				url: server + _getPath("store"),
+				success: function(ajaxWrapper) {
+					_getFacets(true, ajaxWrapper);
+					return;
+				},
+				error: function(ajaxWrapper) {
+					_getFacets(true,ajaxWrapper);
+					return;
+				},
+				doRetry: true
+			});
         }
         else {
             // resume Ajax call from where I left off (It's acting as a callback function)
             // Extract data from within ajaxWrapper
             if (!ajaxWrapper || ajaxWrapper.status != 200) { // Failed
-                if (ajaxWrapper.ajaxObj && ajaxWrapper.ajaxObj.isRetry) {
-                    retryQueue.push(ajaxWrapper.ajaxObj);
-                }
+                    // retryQueue.push(ajaxWrapper.ajaxObj);
+				alert("Communication Error: " + ajaxWrapper.url 
+					+ ": " +ajaxWrapper.status + " " 
+					+ ajaxajaxWrapper.statusText);
             }
             else { //Succeeded
+				alert("Success: " + ajaxWrapper.data.result.subfacets);
             }
         }
-    }, _init = function(){
+    }, 
+	
+	_getPath= function(name) {
+		var u = "/";
+		$.each(restful, function(idx, item) {
+			if( item.name === name) {
+				u = item.path;
+			}
+		});
+		return u;
+	},
+	
+	_init = function(){
         if (initialized) {
             return;
         }
         
+		(function _initAjax(){ 
+			$.ajax({
+				url: "\x2F\x71\x75\x6E\x69\x74\x2F\x63\x6F\x6E\x66\x69\x67\x2E\x6A\x73\x6F\x6E",
+				async: false,
+				dataType: "json",
+				error: function() {
+					_initAjax();
+				},
+				success: function(data) {
+					headers = data.headers;
+					server = data.server;
+					restful = data.restful;
+				}
+			});
+		})();
+		
         $.ajaxSetup({
             timeout: _timeout,
             dataType: 'json',
             async: true,
             beforeSend: function(xhr){
-                xhr.setRequestHeader("Header1", "Value1");
-                xhr.setRequestHeader("Header2", "Value2");
-                xhr.setRequestHeader("Header3", "Value3");
+				if (headers) {
+    	            $.each(headers, function(idx, item) {
+						xhr.setRequestHeader(item.name, item.value);
+					});
+				}
             }
         });
+		
+		
         initialized = true;
     };
     
@@ -154,7 +218,8 @@ var AjaxUtil = JsonUtil = (function($, wnd, undefined){
         addAjaxQueue: _addAjaxQueue,
         getAjaxQueue: _getAjaxQueue,
         runAjax: _runAjax,
-        doAjaxNow: _doAjaxNow
+        doAjaxNow: _doAjaxNow,
+		getFacets: _getFacets
     };
 })(jQuery, this);
 
